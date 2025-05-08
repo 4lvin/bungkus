@@ -88,11 +88,13 @@
             </div>
         </div>
     </ShopLayout>
+    <Toast />
 </template>
 
-<script setup>
-import { Link, router } from '@inertiajs/vue3';
-import { defineEmits, defineProps, ref } from 'vue';
+<script setup lang="ts">
+import { Link, router, usePage } from '@inertiajs/vue3';
+import { useToast } from 'primevue/usetoast';
+import { defineEmits, defineProps, ref, watch } from 'vue';
 import ShopLayout from '../shop/ShopApp.vue';
 import Pagination from '../shop/components/Pagination.vue';
 import ProductCard from '../shop/components/ProductCard.vue';
@@ -126,21 +128,50 @@ const filters = ref({
     minPrice: props.initialFilters.minPrice,
     maxPrice: props.initialFilters.maxPrice,
 });
-
+const page = usePage();
+const toast = useToast();
+interface FlashMessage {
+    success?: string;
+    error?: string;
+}
+watch(
+    () => page.props.flash as FlashMessage,
+    (flash) => {
+        if (flash.success) {
+            toast.add({
+                severity: 'success',
+                summary: 'Berhasil',
+                detail: flash.success,
+                life: 3000,
+            });
+        }
+        if (flash.error) {
+            toast.add({
+                severity: 'error',
+                summary: 'Gagal',
+                detail: flash.error,
+                life: 3000,
+            });
+        }
+    },
+);
 const sortBy = ref('newest');
 
 // Methods
 const addToCart = (product) => {
     // Using a more modern approach with route composition API
     router.post(
-        '/cart/add',
+        route('cart.add'),
         {
             product_id: product.id,
             quantity: 1,
         },
         {
             onSuccess: () => {
-                console.log('success');
+                // isLoading.value = false;
+            },
+            onError: () => {
+                // isLoading.value = false;
             },
         },
     );

@@ -112,7 +112,6 @@
 
 <script setup>
 import { useForm, usePage } from '@inertiajs/vue3';
-import Swal from 'sweetalert2';
 import { computed, onMounted, ref } from 'vue';
 import ShopLayout from '../shop/ShopApp.vue';
 
@@ -143,14 +142,7 @@ const tax = computed(() => subtotal.value * taxRate);
 const total = computed(() => subtotal.value + tax.value + shipping);
 
 // Check if SweetAlert2 is loaded
-onMounted(() => {
-    if (typeof Swal === 'undefined') {
-        // Add SweetAlert2 CDN if not available
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
-        document.head.appendChild(script);
-    }
-});
+onMounted(() => {});
 
 const submitOrder = () => {
     processing.value = true;
@@ -162,18 +154,6 @@ const submitOrder = () => {
     form.post(route('checkout.store'), {
         onSuccess: () => {
             processing.value = false;
-            Swal.fire({
-                title: 'Success!',
-                text: 'Your order has been placed successfully!',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#3B82F6',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Redirect to order confirmation or home page
-                    window.location.href = route('home');
-                }
-            });
         },
         onError: (errors) => {
             processing.value = false;
@@ -184,14 +164,6 @@ const submitOrder = () => {
                 const firstError = Object.values(errors)[0];
                 errorMessage = firstError || errorMessage;
             }
-
-            Swal.fire({
-                title: 'Error',
-                text: errorMessage,
-                icon: 'error',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#3B82F6',
-            });
         },
         onFinish: () => {
             processing.value = false;

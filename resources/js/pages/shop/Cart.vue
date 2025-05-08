@@ -132,12 +132,14 @@
                 <Link :href="route('shop.products.index')" class="rounded bg-blue-600 px-6 py-3 text-white hover:bg-blue-700"> Start Shopping </Link>
             </div>
         </div>
+        <Toast />
     </shop-layout>
 </template>
 
-<script setup>
-import { Link, router } from '@inertiajs/vue3';
-import { computed } from 'vue';
+<script setup lang="ts">
+import { Link, router, usePage } from '@inertiajs/vue3';
+import { useToast } from 'primevue/usetoast';
+import { computed, watch } from 'vue';
 import ShopLayout from '../shop/ShopApp.vue';
 const props = defineProps({
     cartItems: {
@@ -145,7 +147,33 @@ const props = defineProps({
         required: true,
     },
 });
-
+const page = usePage();
+const toast = useToast();
+interface FlashMessage {
+    success?: string;
+    error?: string;
+}
+watch(
+    () => page.props.flash as FlashMessage,
+    (flash) => {
+        if (flash.success) {
+            toast.add({
+                severity: 'success',
+                summary: 'Berhasil',
+                detail: flash.success,
+                life: 3000,
+            });
+        }
+        if (flash.error) {
+            toast.add({
+                severity: 'error',
+                summary: 'Gagal',
+                detail: flash.error,
+                life: 3000,
+            });
+        }
+    },
+);
 const subtotal = computed(() => props.cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0));
 const tax = computed(() => subtotal.value * 0.1);
 const total = computed(() => subtotal.value + tax.value);

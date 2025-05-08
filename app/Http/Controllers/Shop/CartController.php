@@ -44,7 +44,9 @@ class CartController extends Controller
         $totalPrice = $cartItems->sum(function($item) {
             return $item->price * $item->quantity;
         });
-        dd($cartItems,$totalPrice);
+
+        // Removed dd() debug statement that was causing issues
+        
         return Inertia::render('shop/Cart', [
             'cartItems' => $cartItems,
             'totalPrice' => $totalPrice
@@ -60,13 +62,10 @@ class CartController extends Controller
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
         ]);
-
         $product = Product::findOrFail($request->product_id);
         $cart = $this->getCart();
-
         // Check if the product is already in the cart
         $cartItem = $cart->items()->where('product_id', $request->product_id)->first();
-
         if ($cartItem) {
             // Update existing cart item
             $cartItem->update([
@@ -76,12 +75,15 @@ class CartController extends Controller
             // Create new cart item
             $cart->items()->create([
                 'product_id' => $product->id,
+                'cart_id' => $cart->id,
                 'quantity' => $request->quantity,
                 'price' => $product->price,
             ]);
         }
-
-        return redirect()->back()->with('success', 'Product added to cart successfully');
+        \Log::info('Product ID:', [$product->id]);
+        \Log::info('Cart ID:', [$cart->id]);
+        \Log::info('Cart item created or updated');
+        return redirect()->route('cart.index')->with('success', 'Task berhasil ditambahkan.');
     }
 
     /**
@@ -143,27 +145,21 @@ class CartController extends Controller
     {
         if (Auth::check()) {
             $sessionId = session()->getId();
-            
-            // Find guest cart by session ID
             $guestCart = Cart::where('session_id', $sessionId)->whereNull('user_id')->first();
-            
+    
             if ($guestCart) {
-                // Find or create user cart
                 $userCart = Cart::firstOrCreate([
                     'user_id' => Auth::id(),
                 ]);
-                
-                // Merge guest cart items to user cart
+    
                 foreach ($guestCart->items as $item) {
                     $existingItem = $userCart->items()->where('product_id', $item->product_id)->first();
-                    
+    
                     if ($existingItem) {
-                        // Update quantity if product already exists in user cart
                         $existingItem->update([
                             'quantity' => $existingItem->quantity + $item->quantity,
                         ]);
                     } else {
-                        // Create new cart item in user cart
                         $userCart->items()->create([
                             'product_id' => $item->product_id,
                             'quantity' => $item->quantity,
@@ -171,12 +167,15 @@ class CartController extends Controller
                         ]);
                     }
                 }
-                
-                // Delete guest cart
+    
+                // Hapus guest cart terakhir
+                \Log::info('Deleting guest cart', ['id' => $guestCart->id]);
                 $guestCart->delete();
             }
+    
+            \Log::info('User cart after merge', ['id' => $userCart->id]);
         }
-        
+    
         return redirect()->route('cart.index');
     }
 }
