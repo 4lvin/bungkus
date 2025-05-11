@@ -4,14 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Cart;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Providers\RouteServiceProvider;
-use App\Models\Cart;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -36,16 +35,15 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-                // Get session ID before it changes
-                $sessionId = $request->session()->getId();
+        // Get session ID before it changes
+        // $sessionId = $request->session()->getId();
         $request->authenticate();
 
         $request->session()->regenerate();
-        
-        // Merge carts after login
-        $this->mergeGuestCart($sessionId);
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        // $this->mergeGuestCart($sessionId);
+        return redirect()->intended(route('home', absolute: false));
+        // return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**
@@ -70,17 +68,17 @@ class AuthenticatedSessionController extends Controller
         $guestCart = Cart::where('session_id', $sessionId)
             ->whereNull('user_id')
             ->first();
-        
+
         if ($guestCart) {
             // Find or create user cart
             $userCart = Cart::firstOrCreate([
                 'user_id' => Auth::id(),
             ]);
-            
+
             // Merge guest cart items to user cart
             foreach ($guestCart->items as $item) {
                 $existingItem = $userCart->items()->where('product_id', $item->product_id)->first();
-                
+
                 if ($existingItem) {
                     // Update quantity if product already exists in user cart
                     $existingItem->update([
@@ -95,7 +93,7 @@ class AuthenticatedSessionController extends Controller
                     ]);
                 }
             }
-            
+
             // Delete guest cart
             $guestCart->delete();
         }

@@ -1,7 +1,7 @@
 <template>
     <shop-layout>
         <!-- Hero Section -->
-        <section class="mb-8 bg-blue-600 px-4 py-12 text-white">
+        <section class="mb-8 bg-green-800 px-4 py-12 text-white">
             <div class="container mx-auto text-center">
                 <h1 class="mb-4 text-4xl font-bold">Welcome to Our E-Commerce Store</h1>
                 <p class="mb-6 text-xl">Discover amazing products at great prices</p>
@@ -69,14 +69,14 @@
                         <p class="mb-1 text-sm font-medium text-blue-600">{{ product.category.name }}</p>
                         <h3 class="mb-2 text-lg font-bold">{{ product.name }}</h3>
                         <div class="mt-auto mb-4 flex items-center justify-between">
-                            <span class="text-xl font-bold">Rp{{ formatPrice(product.price) }}</span>
+                            <span class="text-xl font-bold">Rp {{ formatPrice(product.price) }}</span>
                             <span v-if="Math.random() > 0.5" class="text-sm text-gray-500 line-through">
                                 Rp{{ formatPrice(Math.floor(product.price * 1.2)) }}
                             </span>
                         </div>
                         <button
                             @click="addToCart(product)"
-                            class="w-full rounded-full bg-blue-600 py-3 font-medium text-white transition hover:bg-blue-700"
+                            class="w-full rounded-full bg-green-600 py-3 font-medium text-white transition hover:bg-green-700"
                         >
                             Tambahkan ke Keranjang
                         </button>

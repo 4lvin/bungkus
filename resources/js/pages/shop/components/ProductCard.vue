@@ -29,13 +29,13 @@
 
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <span class="text-lg font-bold text-gray-900">${{ formatPrice(product.price) }}</span>
+                    <span class="text-lg font-bold text-gray-900">Rp. {{ formatPrice(product.price) }}</span>
                     <span v-if="product.original_price" class="text-sm text-gray-500 line-through"> ${{ formatPrice(product.original_price) }} </span>
                 </div>
 
                 <button
                     @click.prevent="$emit('add-to-cart', product)"
-                    class="focus:ring-opacity-50 rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:ring focus:ring-blue-500 focus:outline-none"
+                    class="focus:ring-opacity-50 rounded-md bg-green-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:ring focus:ring-green-500 focus:outline-none"
                 >
                     Add to Cart
                 </button>

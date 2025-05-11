@@ -3,16 +3,14 @@
 namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Validator;
-
-DB::beginTransaction();
+use Inertia\Inertia;
 
 class CheckoutController extends Controller
 {
@@ -21,26 +19,24 @@ class CheckoutController extends Controller
      */
     public function index()
     {
-        $cart = session()->get('cart', []);
+        $cart = \App\Models\Cart::where('user_id', auth()->id())->with('items.product')->first();
+
+        if (!$cart || $cart->items->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Your cart is empty!');
+        }
+
         $cartItems = [];
         $total = 0;
 
-        foreach ($cart as $id => $details) {
-            $product = Product::find($id);
-            if ($product) {
-                $cartItems[] = [
-                    'id' => $id,
-                    'name' => $product->name,
-                    'price' => $product->price,
-                    'quantity' => $details['quantity'],
-                    'subtotal' => $product->price * $details['quantity'],
-                ];
-                $total += $product->price * $details['quantity'];
-            }
-        }
-
-        if (count($cartItems) === 0) {
-            return redirect()->route('cart.index')->with('error', 'Your cart is empty!');
+        foreach ($cart->items as $item) {
+            $cartItems[] = [
+                'id' => $item->product_id,
+                'name' => $item->product->name,
+                'price' => $item->price,
+                'quantity' => $item->quantity,
+                'subtotal' => $item->price * $item->quantity,
+            ];
+            $total += $item->price * $item->quantity;
         }
 
         return Inertia::render('shop/Checkout', [
@@ -73,36 +69,38 @@ class CheckoutController extends Controller
                 ->with('error', 'Validasi gagal! ' . $errorMessages)
                 ->withInput();
         }
-    
-        $cart = session()->get('cart', []);
+
+        $cart = Cart::where('user_id', auth()->id())->with('items.product')->first();
+
+        if (!$cart || $cart->items->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Your cart is empty!');
+        }
+
         $cartItems = [];
         $total = 0;
-    
-        foreach ($cart as $id => $details) {
-            $product = Product::find($id);
-            if ($product) {
-                $cartItems[] = [
-                    'id' => $id,
-                    'name' => $product->name,
-                    'price' => $product->price,
-                    'quantity' => $details['quantity'],
-                    'subtotal' => $product->price * $details['quantity'],
-                ];
-                $total += $product->price * $details['quantity'];
-            }
+
+        foreach ($cart->items as $item) {
+            $cartItems[] = [
+                'id' => $item->product_id,
+                'name' => $item->product->name,
+                'price' => $item->price,
+                'quantity' => $item->quantity,
+                'subtotal' => $item->price * $item->quantity,
+            ];
+            $total += $item->price * $item->quantity;
         }
-    
+
         if (count($cartItems) === 0) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty!');
         }
-    
+
         // Create order
         try {
             DB::beginTransaction();
-            
+
             // Generate a unique order number
             $orderNumber = 'ORD-' . now()->format('YmdHis') . '-' . rand(10000, 99999);
-            
+
             // Create the order with the order number included
             $order = new Order();
             $order->user_id = auth()->id();
@@ -119,7 +117,7 @@ class CheckoutController extends Controller
             $order->shipping_phone = $request->shipping_phone;
             $order->notes = $request->notes;
             $order->save();
-        
+
             // Create order items
             foreach ($cartItems as $item) {
                 // Check stock first
@@ -127,7 +125,7 @@ class CheckoutController extends Controller
                 if (!$product || $product->quantity < $item['quantity']) {
                     throw new \Exception("Insufficient stock for product: " . ($product ? $product->name : 'Unknown'));
                 }
-                
+
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item['id'],
@@ -135,16 +133,17 @@ class CheckoutController extends Controller
                     'price' => $item['price'],
                     'quantity' => $item['quantity'],
                 ]);
-        
+
                 // Update product stock
                 $product->decrement('quantity', $item['quantity']);
             }
-    
+
             // Clear cart after successful order
             session()->forget('cart');
-        
+            $cart->items()->delete();
+            $cart->delete();
             DB::commit();
-        
+
             return redirect()->route('checkout.thankyou', ['order' => $order->id]);
         } catch (\Throwable $e) {
             DB::rollBack();
