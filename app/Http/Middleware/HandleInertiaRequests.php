@@ -2,11 +2,13 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Cart;
+use App\Models\CartItem;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
-use Illuminate\Support\Facades\Session;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -41,21 +43,39 @@ class HandleInertiaRequests extends Middleware
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
         return [
-            ...parent::share($request),
+             ...parent::share($request),
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
                 'user' => $request->user(),
             ],
+            'cartCount' => function () {
+                $cartCount = 0;
+
+                if (auth()->check()) {
+                    // User is logged in, get cart by user_id
+                    $cart = Cart::where('user_id', auth()->id())->first();
+                } else {
+                    // User is not logged in, get cart by session_id
+                    $cart = Cart::where('session_id', session()->getId())->first();
+                }
+
+                // Calculate total quantity from cart_items if cart exists
+                if ($cart) {
+                    $cartCount = CartItem::where('cart_id', $cart->id)->sum('quantity');
+                }
+
+                return $cartCount;
+            },
             'ziggy' => [
-                ...(new Ziggy)->toArray(),
+                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
             'flash' => [
                 'success' => Session::get('success'),
                 'error' => Session::get('error'),
             ],
-            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'sidebarOpen' => !$request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }
 }

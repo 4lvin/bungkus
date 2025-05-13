@@ -51,6 +51,7 @@ class CheckoutController extends Controller
      */
     public function store(Request $request)
     {
+        $data = $request->all();
         $validated = Validator::make($data, [
             'shipping_fullname' => 'required|string|max:255',
             'shipping_address' => 'required|string|max:255',

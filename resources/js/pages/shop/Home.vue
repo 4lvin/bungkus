@@ -56,7 +56,7 @@
                     </div>
 
                     <div class="flex flex-1 flex-col p-5">
-                        <div class="mb-1 flex items-center gap-1">
+                        <!-- <div class="mb-1 flex items-center gap-1">
                             <span v-for="i in 5" :key="i" class="text-yellow-400">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                     <path
@@ -65,14 +65,14 @@
                                 </svg>
                             </span>
                             <span class="text-xs text-gray-500">({{ Math.floor(Math.random() * 50) + 10 }} ulasan)</span>
-                        </div>
+                        </div> -->
                         <p class="mb-1 text-sm font-medium text-blue-600">{{ product.category.name }}</p>
                         <h3 class="mb-2 text-lg font-bold">{{ product.name }}</h3>
                         <div class="mt-auto mb-4 flex items-center justify-between">
                             <span class="text-xl font-bold">Rp {{ formatPrice(product.price) }}</span>
-                            <span v-if="Math.random() > 0.5" class="text-sm text-gray-500 line-through">
+                            <!-- <span v-if="Math.random() > 0.5" class="text-sm text-gray-500 line-through">
                                 Rp{{ formatPrice(Math.floor(product.price * 1.2)) }}
-                            </span>
+                            </span> -->
                         </div>
                         <button
                             @click="addToCart(product)"
@@ -178,7 +178,11 @@ function addToWishlist(product) {
 
 // Format harga dengan titik sebagai pemisah ribuan
 function formatPrice(price) {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    // Convert to number and remove decimal part
+    const wholeNumber = Math.floor(Number(price));
+
+    // Format with dot as thousand separator
+    return wholeNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 </script>
 

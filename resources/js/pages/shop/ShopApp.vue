@@ -12,7 +12,15 @@
                                 <Link :href="route('shop.products.index')" class="hover:text-gray-200">Products</Link>
                             </li>
                             <li>
-                                <Link :href="route('cart.index')" class="hover:text-gray-200">Cart ({{ cartCount }})</Link>
+                                <Link :href="route('cart.index')" class="relative flex items-center hover:text-gray-200">
+                                    Cart
+                                    <span
+                                        v-if="cartCount > 0"
+                                        class="absolute -top-2 -right-4 inline-flex transform items-center justify-center rounded-full bg-red-600 px-2 py-1 text-xs leading-none font-bold text-white"
+                                    >
+                                        {{ cartCount }}
+                                    </span>
+                                </Link>
                             </li>
                             <li v-if="auth?.user">
                                 <Link :href="route('profile')" class="hover:text-gray-200">My Account</Link>

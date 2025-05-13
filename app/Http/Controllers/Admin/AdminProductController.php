@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -17,12 +18,16 @@ class AdminProductController extends Controller
      */
     public function index()
     {
+        $perPage = request('per_page', 10);
         $products = Product::with('category')
             ->orderBy('id', 'desc')
-            ->paginate(10);
+            ->paginate($perPage)
+            ->withQueryString();
+        $categories = Category::where('is_active', true)->get();
 
         return Inertia::render('admin/produk/Index', [
             'products' => $products,
+            'categories' => $categories,
         ]);
     }
 
@@ -33,7 +38,7 @@ class AdminProductController extends Controller
     {
         $categories = Category::where('is_active', true)->get();
 
-        return Inertia::render('admin/pages/products/Create', [
+        return Inertia::render('admin/products/Create', [
             'categories' => $categories,
             'errors' => session('errors') ? session('errors')->getBag('default')->getMessages() : (object) [],
         ]);
@@ -81,7 +86,7 @@ class AdminProductController extends Controller
     {
         $categories = Category::where('is_active', true)->get();
 
-        return Inertia::render('admin/pages/products/Edit', [
+        return Inertia::render('admin/products/Edit', [
             'product' => $product,
             'categories' => $categories,
             'errors' => session('errors') ? session('errors')->getBag('default')->getMessages() : (object) [],
@@ -93,7 +98,9 @@ class AdminProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $request->validate([
+        $data = $request->all();
+
+        $validated = Validator::make($data, [
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
@@ -102,30 +109,41 @@ class AdminProductController extends Controller
             'image' => 'nullable|image|max:2048', // 2MB Max
         ]);
 
-        $data = $request->all();
+        if ($validated->fails()) {
+            $errorMessages = implode(', ', $validated->errors()->all());
+
+            return redirect()
+                ->route('admin.products.index')
+                ->with('error', 'Validasi gagal! ' . $errorMessages)
+                ->withInput();
+        }
+
+        $validatedData = $validated->validated();
 
         // Generate slug
-        $data['slug'] = Str::slug($request->name);
+        $validatedData['slug'] = Str::slug($validatedData['name']);
 
         // Handle image upload
         if ($request->hasFile('image')) {
-            // Delete old image if it exists
+            // Delete old image if exists
             if ($product->image && Storage::disk('public')->exists(str_replace('/storage/', '', $product->image))) {
                 Storage::disk('public')->delete(str_replace('/storage/', '', $product->image));
             }
 
             $path = $request->file('image')->store('products', 'public');
-            $data['image'] = '/storage/' . $path;
+            $validatedData['image'] = '/storage/' . $path;
         }
 
         // Convert checkbox values to boolean
-        $data['is_featured'] = $request->boolean('is_featured');
-        $data['is_active'] = $request->boolean('is_active');
+        $validatedData['is_featured'] = $request->boolean('is_featured');
+        $validatedData['is_active'] = $request->boolean('is_active');
 
-        $product->update($data);
+        $product->fill($validatedData);
+
+        $product->save();
 
         return redirect()->route('admin.products.index')
-            ->with('success', 'Product updated successfully.');
+            ->with('success', 'Produk berhasil diperbarui.');
     }
 
     /**

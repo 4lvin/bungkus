@@ -33,10 +33,6 @@ class AuthenticatedSessionController extends Controller
     public function createAdmin(Request $request): Response
     {
         // Store the intended URL in session if coming from checkout
-        if ($request->input('redirect') === 'checkout') {
-            session()->put('url.intended', route('checkout.index'));
-        }
-
         return Inertia::render('auth/LoginAdmin', [
             'canResetPassword' => Route::has('password.request'),
             'status' => $request->session()->get('status'),
@@ -63,7 +59,21 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        $user = Auth::user();
+
+        // Periksa apakah kolom is_admin bernilai true
+        if (!$user->is_admin) {
+            // Logout jika bukan admin
+            Auth::logout();
+
+            // Redirect ke halaman login dengan pesan error
+            return redirect()->route('login')->with('error', 'Akses ditolak. Hanya admin yang bisa login.');
+        }
+
+        // Regenerasi session setelah login berhasil
         $request->session()->regenerate();
+
+        // Redirect ke dashboard admin
         return redirect()->route('dashboard');
     }
 

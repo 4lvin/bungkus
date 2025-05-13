@@ -57,7 +57,11 @@ const props = defineProps({
     },
 });
 
-const formatPrice = (price) => {
-    return Number(price).toFixed(2);
-};
+function formatPrice(price) {
+    // Convert to number and remove decimal part
+    const wholeNumber = Math.floor(Number(price));
+
+    // Format with dot as thousand separator
+    return wholeNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
 </script>

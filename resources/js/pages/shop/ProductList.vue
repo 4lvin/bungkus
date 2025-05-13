@@ -20,7 +20,7 @@
                     </div>
 
                     <!-- Filters Card -->
-                    <div class="rounded-lg bg-white p-5 shadow-md transition-shadow hover:shadow-lg">
+                    <!-- <div class="rounded-lg bg-white p-5 shadow-md transition-shadow hover:shadow-lg">
                         <h3 class="mb-4 text-lg font-semibold text-gray-800">Filters</h3>
                         <form @submit.prevent="applyFilters">
                             <div class="mb-4">
@@ -49,7 +49,7 @@
                                 Apply Filters
                             </button>
                         </form>
-                    </div>
+                    </div> -->
                 </aside>
 
                 <!-- Products Grid -->
@@ -134,6 +134,7 @@ interface FlashMessage {
     success?: string;
     error?: string;
 }
+
 watch(
     () => page.props.flash as FlashMessage,
     (flash) => {
