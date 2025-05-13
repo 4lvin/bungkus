@@ -5,14 +5,34 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import { BookOpen, BriefcaseBusiness, Folder, LayoutGrid, LayoutList, ScrollText } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
+const currentPath = window.location.pathname;
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: '/dashboard',
+        href: route('dashboard'),
         icon: LayoutGrid,
+        isActive: currentPath === new URL(route('dashboard')).pathname,
+    },
+    {
+        title: 'Kategori',
+        href: route('admin.categories.index'),
+        icon: BriefcaseBusiness,
+        isActive: currentPath === new URL(route('admin.categories.index')).pathname,
+    },
+    {
+        title: 'Produk',
+        href: route('admin.products.index'),
+        icon: LayoutList,
+        isActive: currentPath === new URL(route('admin.products.index')).pathname,
+    },
+    {
+        title: 'Order',
+        href: route('dashboard'),
+        icon: ScrollText,
+        isActive: currentPath === new URL(route('dashboard')).pathname,
     },
 ];
 

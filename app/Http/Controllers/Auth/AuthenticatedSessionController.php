@@ -30,20 +30,41 @@ class AuthenticatedSessionController extends Controller
         ]);
     }
 
+    public function createAdmin(Request $request): Response
+    {
+        // Store the intended URL in session if coming from checkout
+        if ($request->input('redirect') === 'checkout') {
+            session()->put('url.intended', route('checkout.index'));
+        }
+
+        return Inertia::render('auth/LoginAdmin', [
+            'canResetPassword' => Route::has('password.request'),
+            'status' => $request->session()->get('status'),
+        ]);
+    }
+
     /**
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
         // Get session ID before it changes
-        // $sessionId = $request->session()->getId();
+        $sessionId = $request->session()->getId();
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        // $this->mergeGuestCart($sessionId);
+        $this->mergeGuestCart($sessionId);
         return redirect()->intended(route('home', absolute: false));
         // return redirect()->intended(RouteServiceProvider::HOME);
+    }
+
+    public function storeAdmin(LoginRequest $request): RedirectResponse
+    {
+        $request->authenticate();
+
+        $request->session()->regenerate();
+        return redirect()->route('dashboard');
     }
 
     /**

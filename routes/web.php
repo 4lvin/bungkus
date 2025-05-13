@@ -5,6 +5,8 @@ use App\Http\Controllers\Shop\CartController;
 use App\Http\Controllers\Shop\CheckoutController;
 use App\Http\Controllers\Shop\HomeController;
 use App\Http\Controllers\Shop\ProductController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\AdminProductController;
 // use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -34,6 +36,10 @@ Route::middleware(['auth'])->group(function () {
 
 // Merge cart after login
 //     Route::post('/cart/merge', [CartController::class, 'mergeCart'])->name('cart.merge');
+});
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('categories', CategoryController::class);
+    Route::resource('products', AdminProductController::class);
 });
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
