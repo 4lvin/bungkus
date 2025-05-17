@@ -30,7 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::get('/thankyou/{order}', [CheckoutController::class, 'thankYou'])->name('checkout.thankyou');
     Route::get('/profile', function () {
-        return Inertia::render('Shop/Profile');
+        return Inertia::render('shop/Profile');
     })->name('profile');
 // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 

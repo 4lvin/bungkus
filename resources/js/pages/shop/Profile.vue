@@ -314,7 +314,7 @@
 </template>
 
 <script>
-import ShopLayout from '../ShopApp.vue';
+import ShopLayout from '../shop/ShopApp.vue';
 
 export default {
     components: {
