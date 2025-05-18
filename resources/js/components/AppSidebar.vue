@@ -30,9 +30,9 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Order',
-        href: route('dashboard'),
+        href: route('admin.orders.index'),
         icon: ScrollText,
-        isActive: currentPath === new URL(route('dashboard')).pathname,
+        isActive: currentPath === new URL(route('admin.orders.index')).pathname,
     },
 ];
 

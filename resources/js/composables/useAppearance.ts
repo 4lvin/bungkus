@@ -3,17 +3,16 @@ import { onMounted, ref } from 'vue';
 type Appearance = 'light' | 'dark' | 'system';
 
 export function updateTheme(value: Appearance) {
-    if (typeof window === 'undefined') {
-        return;
-    }
+    if (typeof window === 'undefined') return;
+
+    const root = document.documentElement;
+    root.classList.remove('light', 'dark');
 
     if (value === 'system') {
-        const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
-        const systemTheme = mediaQueryList.matches ? 'dark' : 'light';
-
-        document.documentElement.classList.toggle('dark', systemTheme === 'dark');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        root.classList.add(prefersDark ? 'dark' : 'light');
     } else {
-        document.documentElement.classList.toggle('dark', value === 'dark');
+        root.classList.add(value);
     }
 }
 
@@ -46,7 +45,7 @@ const getStoredAppearance = () => {
 const handleSystemThemeChange = () => {
     const currentAppearance = getStoredAppearance();
 
-    updateTheme(currentAppearance || 'system');
+    updateTheme(currentAppearance || 'light');
 };
 
 export function initializeTheme() {
@@ -56,14 +55,14 @@ export function initializeTheme() {
 
     // Initialize theme from saved preference or default to system...
     const savedAppearance = getStoredAppearance();
-    updateTheme(savedAppearance || 'system');
+    updateTheme(savedAppearance || 'light');
 
     // Set up system theme change listener...
     mediaQuery()?.addEventListener('change', handleSystemThemeChange);
 }
 
 export function useAppearance() {
-    const appearance = ref<Appearance>('system');
+    const appearance = ref<Appearance>('light');
 
     onMounted(() => {
         const savedAppearance = localStorage.getItem('appearance') as Appearance | null;
