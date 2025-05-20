@@ -9,7 +9,7 @@
                     class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 <div v-else class="flex h-full w-full items-center justify-center">
-                    <span class="text-gray-500">No image</span>
+                    <span class="text-gray-500">Tidak ada gambar</span>
                 </div>
 
                 <div v-if="product.discount_percent" class="absolute top-2 left-2 rounded-full bg-red-500 px-2 py-1 text-xs font-bold text-white">
@@ -37,7 +37,7 @@
                     @click.prevent="$emit('add-to-cart', product)"
                     class="focus:ring-opacity-50 rounded-md bg-green-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:ring focus:ring-green-500 focus:outline-none"
                 >
-                    Add to Cart
+                    Masukan Keranjang
                 </button>
             </div>
         </div>

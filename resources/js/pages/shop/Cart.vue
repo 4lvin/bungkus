@@ -1,7 +1,7 @@
 <template>
     <shop-layout>
         <div class="container mx-auto px-4">
-            <h1 class="mb-6 text-3xl font-bold">Shopping Cart</h1>
+            <h1 class="mb-6 text-3xl font-bold">Keranjang Belanja</h1>
 
             <div v-if="props.cartItems.length" class="grid gap-6 md:grid-cols-3">
                 <!-- Cart Items -->
@@ -10,9 +10,9 @@
                         <table class="w-full text-sm">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-4 py-3 text-left">Product</th>
-                                    <th class="px-4 py-3 text-left">Price</th>
-                                    <th class="px-4 py-3 text-left">Qty</th>
+                                    <th class="px-4 py-3 text-left">Produk</th>
+                                    <th class="px-4 py-3 text-left">Harga</th>
+                                    <th class="px-4 py-3 text-left">Jumlah</th>
                                     <th class="px-4 py-3 text-left">Total</th>
                                     <th></th>
                                 </tr>
@@ -28,7 +28,9 @@
                                                     alt="Product"
                                                     class="h-full w-full object-cover"
                                                 />
-                                                <div v-else class="flex h-full items-center justify-center text-xs text-gray-500">No image</div>
+                                                <div v-else class="flex h-full items-center justify-center text-xs text-gray-500">
+                                                    Tidak ada gambar
+                                                </div>
                                             </div>
                                             <div>
                                                 <template v-if="item.product">
@@ -42,7 +44,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3">${{ item.price }}</td>
+                                    <td class="px-4 py-3">Rp{{ formatPrice(item.price) }}</td>
                                     <td class="px-4 py-3">
                                         <div class="flex items-center">
                                             <button @click="decrement(item)" class="text-gray-500">
@@ -64,7 +66,7 @@
                                             </button>
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3">${{ (item.price * item.quantity).toFixed(2) }}</td>
+                                    <td class="px-4 py-3">Rp{{ formatPrice(item.price * item.quantity) }}</td>
                                     <td class="px-4 py-3">
                                         <button @click="remove(item)" class="text-red-600 hover:text-red-800">
                                             <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -83,35 +85,35 @@
 
                     <div class="mt-6 flex flex-wrap justify-between gap-2">
                         <Link :href="route('shop.products.index')" class="rounded bg-gray-600 px-4 py-2 text-white hover:bg-gray-700">
-                            Continue Shopping
+                            Lanjut Belanja
                         </Link>
-                        <button @click="clear" class="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700">Clear Cart</button>
+                        <button @click="clear" class="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700">Kosongkan Keranjang</button>
                     </div>
                 </div>
 
                 <!-- Summary -->
                 <div class="md:col-span-1">
                     <div class="rounded-lg bg-white p-6 shadow">
-                        <h2 class="mb-4 text-lg font-semibold">Cart Summary</h2>
+                        <h2 class="mb-4 text-lg font-semibold">Ringkasan Belanja</h2>
                         <div class="space-y-2 border-t border-b py-2">
                             <div class="flex justify-between">
                                 <span>Subtotal</span>
-                                <span>${{ subtotal.toFixed(2) }}</span>
+                                <span>Rp{{ formatPrice(subtotal) }}</span>
                             </div>
                             <div class="flex justify-between">
-                                <span>Tax</span>
-                                <span>${{ tax.toFixed(2) }}</span>
+                                <span>Admin</span>
+                                <span>Rp{{ formatPrice(tax) }}</span>
                             </div>
                         </div>
                         <div class="flex justify-between py-4 text-lg font-bold">
                             <span>Total</span>
-                            <span>${{ total.toFixed(2) }}</span>
+                            <span>Rp{{ formatPrice(total) }}</span>
                         </div>
                         <Link
                             :href="route('checkout.index')"
                             class="inline-block w-full rounded bg-blue-600 px-4 py-2 text-center text-white hover:bg-blue-700"
                         >
-                            Proceed to Checkout
+                            Lanjut ke Pembayaran
                         </Link>
                     </div>
                 </div>
@@ -127,9 +129,9 @@
                         d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                     />
                 </svg>
-                <h2 class="my-4 text-2xl font-semibold">Your cart is empty</h2>
-                <p class="mb-6 text-gray-600">Looks like you haven't added any products yet.</p>
-                <Link :href="route('shop.products.index')" class="rounded bg-blue-600 px-6 py-3 text-white hover:bg-blue-700"> Start Shopping </Link>
+                <h2 class="my-4 text-2xl font-semibold">Keranjang kosong</h2>
+                <p class="mb-6 text-gray-600">Sepertinya kamu belum menambahkan produk apa pun.</p>
+                <Link :href="route('shop.products.index')" class="rounded bg-blue-600 px-6 py-3 text-white hover:bg-blue-700"> Mulai Belanja </Link>
             </div>
         </div>
         <Toast />
@@ -182,7 +184,13 @@ function update(item) {
     if (item.quantity < 1) item.quantity = 1;
     router.patch(route('cart.update', item.id), { quantity: item.quantity }, { preserveScroll: true });
 }
+function formatPrice(price) {
+    // Convert to number and remove decimal part
+    const wholeNumber = Math.floor(Number(price));
 
+    // Format with dot as thousand separator
+    return wholeNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
 function increment(item) {
     item.quantity++;
     update(item);

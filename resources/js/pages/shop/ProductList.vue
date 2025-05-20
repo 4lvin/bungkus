@@ -6,7 +6,7 @@
                 <aside class="w-full md:w-1/4">
                     <!-- Categories Card -->
                     <div class="mb-6 rounded-lg bg-white p-5 shadow-md transition-shadow hover:shadow-lg">
-                        <h3 class="mb-4 text-lg font-semibold text-gray-800">Categories</h3>
+                        <h3 class="mb-4 text-lg font-semibold text-gray-800">Kategori</h3>
                         <ul class="space-y-3">
                             <li v-for="category in categories" :key="category.id">
                                 <Link
@@ -21,10 +21,10 @@
 
                     <!-- Filters Card -->
                     <!-- <div class="rounded-lg bg-white p-5 shadow-md transition-shadow hover:shadow-lg">
-                        <h3 class="mb-4 text-lg font-semibold text-gray-800">Filters</h3>
+                        <h3 class="mb-4 text-lg font-semibold text-gray-800">Filter</h3>
                         <form @submit.prevent="applyFilters">
                             <div class="mb-4">
-                                <label class="mb-2 block text-sm font-medium text-gray-700">Price Range</label>
+                                <label class="mb-2 block text-sm font-medium text-gray-700">Rentang Harga</label>
                                 <div class="flex items-center gap-2">
                                     <input
                                         type="number"
@@ -46,7 +46,7 @@
                                 type="submit"
                                 class="focus:ring-opacity-50 w-full rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 focus:ring focus:ring-blue-500 focus:outline-none"
                             >
-                                Apply Filters
+                                Terapkan Filter
                             </button>
                         </form>
                     </div> -->
@@ -57,16 +57,16 @@
                     <div class="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                         <h1 class="text-2xl font-bold text-gray-800">{{ title }}</h1>
                         <div class="flex items-center">
-                            <label for="sort-select" class="mr-2 text-sm text-gray-700">Sort by:</label>
+                            <label for="sort-select" class="mr-2 text-sm text-gray-700">Urutkan:</label>
                             <select
                                 id="sort-select"
                                 v-model="sortBy"
                                 @change="sortProducts"
                                 class="focus:ring-opacity-50 rounded-md border border-gray-300 p-2 text-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:outline-none"
                             >
-                                <option value="newest">Newest</option>
-                                <option value="price_low">Price: Low to High</option>
-                                <option value="price_high">Price: High to Low</option>
+                                <option value="newest">Terbaru</option>
+                                <option value="price_low">Harga: Rendah ke Tinggi</option>
+                                <option value="price_high">Harga: Tinggi ke Rendah</option>
                             </select>
                         </div>
                     </div>
@@ -77,7 +77,7 @@
                     </div>
 
                     <div v-else class="flex h-64 items-center justify-center rounded-lg bg-gray-100">
-                        <p class="text-lg text-gray-500">No products found</p>
+                        <p class="text-lg text-gray-500">Produk tidak ditemukan</p>
                     </div>
 
                     <!-- Pagination -->

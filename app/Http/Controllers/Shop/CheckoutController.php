@@ -59,7 +59,7 @@ class CheckoutController extends Controller
             'shipping_state' => 'required|string|max:255',
             'shipping_zipcode' => 'required|string|max:20',
             'shipping_phone' => 'required|string|max:20',
-            'payment_method' => 'required|string|in:credit_card,paypal',
+            'payment_method' => 'required|string|in:cash,bank_transfer',
         ]);
 
         if ($validated->fails()) {

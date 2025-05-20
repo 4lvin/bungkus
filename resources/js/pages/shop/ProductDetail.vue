@@ -44,7 +44,7 @@
                             </inertia-link>
                         </div>
 
-                        <div class="mb-4 text-2xl font-bold text-blue-600">${{ product.price }}</div>
+                        <div class="mb-4 text-2xl font-bold text-blue-600">Rp{{ formatPrice(product.price) }}</div>
 
                         <div v-if="product.quantity > 0" class="mb-4 text-green-600">
                             <span class="font-medium">In Stock</span>

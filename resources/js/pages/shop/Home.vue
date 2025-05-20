@@ -1,15 +1,15 @@
 <template>
     <shop-layout>
         <!-- Hero Section -->
-        <section class="mb-8 bg-green-800 px-4 py-12 text-white">
+        <section class="mb-8 rounded-lg bg-green-800 px-4 py-12 text-white">
             <div class="container mx-auto text-center">
-                <h1 class="mb-4 text-4xl font-bold">Welcome to Our E-Commerce Store</h1>
-                <p class="mb-6 text-xl">Discover amazing products at great prices</p>
+                <h1 class="mb-4 text-4xl font-bold">Selamat Datang di Toko Online Kami</h1>
+                <p class="mb-6 text-xl">Temukan produk terbaik dengan harga terjangkau</p>
                 <Link
                     :href="route('shop.products.index')"
                     class="inline-block rounded-lg bg-white px-6 py-3 font-semibold text-blue-600 transition hover:bg-gray-100"
                 >
-                    Shop Now
+                    Belanja Sekarang
                 </Link>
             </div>
         </section>
@@ -36,9 +36,9 @@
                             class="h-full w-full object-cover transition duration-500 group-hover:scale-110"
                         />
                         <div v-else class="flex h-full w-full items-center justify-center bg-gray-100">
-                            <span class="text-gray-500">No image</span>
+                            <span class="text-gray-500">Tidak ada gambar</span>
                         </div>
-                        <div class="absolute top-3 right-3">
+                        <!-- <div class="absolute top-3 right-3">
                             <button
                                 @click.prevent="addToWishlist(product)"
                                 class="rounded-full bg-white p-2 text-gray-600 shadow-md transition hover:bg-blue-600 hover:text-white"
@@ -52,7 +52,7 @@
                                     />
                                 </svg>
                             </button>
-                        </div>
+                        </div> -->
                     </div>
 
                     <div class="flex flex-1 flex-col p-5">

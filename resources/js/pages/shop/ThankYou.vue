@@ -13,26 +13,21 @@
                             />
                         </svg>
                     </div>
-                    <h1 class="mb-2 text-2xl font-bold sm:text-3xl">Thank You for Your Order!</h1>
-                    <p class="text-gray-600">Your order has been placed successfully.</p>
+                    <h1 class="mb-2 text-2xl font-bold sm:text-3xl">Terima Kasih atas Pesanan Anda!</h1>
+                    <p class="text-gray-600">Pesanan Anda telah berhasil dibuat.</p>
                 </div>
-
                 <!-- Order Details -->
                 <div class="mb-6 rounded-lg border bg-gray-50 p-4 text-left">
-                    <h2 class="mb-3 text-lg font-semibold sm:text-xl">Order Details</h2>
+                    <h2 class="mb-3 text-lg font-semibold sm:text-xl">Detail Pesanan</h2>
                     <div class="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-                        <div class="text-gray-600">Order Number:</div>
+                        <div class="text-gray-600">Nomor Pesanan:</div>
                         <div class="font-medium">{{ order.order_number }}</div>
-
-                        <div class="text-gray-600">Date:</div>
+                        <div class="text-gray-600">Tanggal:</div>
                         <div class="font-medium">{{ formatDate(order.created_at) }}</div>
-
-                        <div class="text-gray-600">Total Amount:</div>
-                        <div class="font-medium">${{ order.total_amount }}</div>
-
-                        <div class="text-gray-600">Payment Method:</div>
+                        <div class="text-gray-600">Total Pembayaran:</div>
+                        <div class="font-medium">Rp{{ formatPrice(order.total_amount) }}</div>
+                        <div class="text-gray-600">Metode Pembayaran:</div>
                         <div class="font-medium">{{ formatPaymentMethod(order.payment_method) }}</div>
-
                         <div class="text-gray-600">Status:</div>
                         <div class="font-medium">
                             <span class="inline-block rounded px-2 py-1 text-xs" :class="statusClass(order.status)">
@@ -41,24 +36,22 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- What's Next -->
                 <div class="mb-6 text-left">
-                    <h2 class="mb-2 text-lg font-semibold sm:text-xl">What's Next?</h2>
+                    <h2 class="mb-2 text-lg font-semibold sm:text-xl">Langkah Selanjutnya</h2>
                     <p class="text-sm text-gray-600">
-                        You will receive an email confirmation shortly at
+                        Anda akan menerima email konfirmasi ke alamat
                         <span class="font-medium">{{ $page.props.auth.user.email }}</span
-                        >. We will notify you when your order has been shipped.
+                        >. Kami akan mengirimkan notifikasi ketika pesanan Anda telah dikirim.
                     </p>
                 </div>
-
                 <!-- Buttons -->
                 <div class="flex flex-col justify-center gap-4 sm:flex-row">
                     <Link :href="route('home')" class="rounded bg-blue-600 px-6 py-2 text-center text-sm text-white hover:bg-blue-700">
-                        Continue Shopping
+                        Lanjut Belanja
                     </Link>
                     <Link :href="route('profile')" class="rounded bg-gray-600 px-6 py-2 text-center text-sm text-white hover:bg-gray-700">
-                        View Order History
+                        Lihat Riwayat Pesanan
                     </Link>
                 </div>
             </div>
@@ -82,7 +75,13 @@ function formatDate(dateString) {
         day: 'numeric',
     });
 }
+function formatPrice(price) {
+    // Convert to number and remove decimal part
+    const wholeNumber = Math.floor(Number(price));
 
+    // Format with dot as thousand separator
+    return wholeNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
 function formatPaymentMethod(method) {
     const methods = {
         credit_card: 'Credit Card',

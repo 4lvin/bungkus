@@ -4,7 +4,7 @@
             <h1 class="mb-8 border-b pb-4 text-3xl font-bold text-gray-800">Checkout</h1>
 
             <div class="flex flex-col gap-8 lg:flex-row">
-                <!-- Checkout Form -->
+                <!-- Formulir Checkout -->
                 <div class="w-full lg:w-2/3">
                     <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-lg">
                         <h2 class="mb-6 flex items-center text-2xl font-semibold text-gray-800">
@@ -23,7 +23,7 @@
                                 />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
-                            Shipping Information
+                            Informasi Pengiriman
                         </h2>
 
                         <form @submit.prevent="submitOrder" class="space-y-6">
@@ -37,9 +37,9 @@
                                             :type="field.type"
                                             :id="field.name"
                                             v-model="form[field.name]"
-                                            class="focus:ring-opacity-50 w-full rounded-lg border-gray-300 shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring focus:ring-blue-500"
+                                            class="focus:ring-opacity-50 h-12 w-full rounded-lg border-gray-300 px-4 py-3 shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring focus:ring-blue-500"
                                             :required="field.required"
-                                            :placeholder="'Enter your ' + field.label.toLowerCase()"
+                                            :placeholder="'Masukkan ' + field.label.toLowerCase()"
                                         />
                                         <div v-if="form.errors[field.name]" class="mt-2 text-sm text-red-500">
                                             {{ form.errors[field.name] }}
@@ -48,7 +48,7 @@
                                 </template>
                             </div>
 
-                            <!-- Payment Method -->
+                            <!-- Metode Pembayaran -->
                             <div class="border-t border-gray-100 pt-4">
                                 <h2 class="mb-4 flex items-center text-2xl font-semibold text-gray-800">
                                     <svg
@@ -65,7 +65,7 @@
                                             d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
                                         />
                                     </svg>
-                                    Payment Method
+                                    Metode Pembayaran
                                 </h2>
                                 <div class="mt-4 space-y-3 rounded-lg bg-gray-50 p-4">
                                     <label
@@ -86,20 +86,20 @@
                                 <div v-if="errors.payment_method" class="mt-2 text-sm text-red-500">{{ errors.payment_method }}</div>
                             </div>
 
-                            <!-- Notes -->
+                            <!-- Catatan -->
                             <div class="border-t border-gray-100 pt-4">
-                                <label for="notes" class="mb-2 block text-sm font-medium text-gray-700">Order Notes (Optional)</label>
+                                <label for="notes" class="mb-2 block text-sm font-medium text-gray-700">Catatan Pesanan (Opsional)</label>
                                 <textarea
                                     id="notes"
                                     v-model="form.notes"
                                     rows="3"
                                     class="focus:ring-opacity-50 w-full rounded-lg border-gray-300 shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring focus:ring-blue-500"
-                                    placeholder="Add any special instructions or notes about your order"
+                                    placeholder="Tambahkan instruksi khusus atau catatan untuk pesanan Anda"
                                 ></textarea>
                                 <div v-if="errors.notes" class="mt-2 text-sm text-red-500">{{ errors.notes }}</div>
                             </div>
 
-                            <!-- Submit -->
+                            <!-- Tombol Submit -->
                             <div class="pt-6">
                                 <button
                                     type="submit"
@@ -120,16 +120,16 @@
                                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                                             ></path>
                                         </svg>
-                                        Processing...
+                                        Memproses...
                                     </span>
-                                    <span v-else>Place Order</span>
+                                    <span v-else>Pesan Sekarang</span>
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
 
-                <!-- Order Summary -->
+                <!-- Ringkasan Pesanan -->
                 <div class="mt-8 w-full lg:mt-0 lg:w-1/3">
                     <div class="sticky top-8 rounded-xl border border-gray-100 bg-white p-6 shadow-lg">
                         <h2 class="mb-4 flex items-center text-2xl font-semibold text-gray-800">
@@ -147,12 +147,12 @@
                                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                                 />
                             </svg>
-                            Order Summary
+                            Ringkasan Pesanan
                         </h2>
 
                         <div class="mb-6">
                             <h3 class="mb-3 flex items-center font-medium text-gray-700">
-                                Order Items
+                                Daftar Produk
                                 <span class="ml-2 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-800">{{
                                     props.cartItems.length
                                 }}</span>
@@ -161,7 +161,7 @@
                                 <div v-for="item in props.cartItems" :key="item.id" class="flex items-center justify-between border-b pb-3">
                                     <div class="flex-1">
                                         <p class="font-medium text-gray-800">{{ item.name }}</p>
-                                        <p class="text-sm text-gray-600">Qty: {{ item.quantity }}</p>
+                                        <p class="text-sm text-gray-600">Jumlah: {{ item.quantity }}</p>
                                     </div>
                                     <p class="font-medium text-gray-800">Rp {{ formatPrice(item.price * item.quantity) }}</p>
                                 </div>
@@ -174,11 +174,11 @@
                                 <span>Rp {{ formatPrice(subtotal) }}</span>
                             </div>
                             <div class="flex justify-between text-gray-700">
-                                <span>Tax ({{ (taxRate * 100).toFixed(0) }}%)</span>
+                                <span>Admin ({{ (taxRate * 100).toFixed(0) }}%)</span>
                                 <span>Rp {{ formatPrice(tax) }}</span>
                             </div>
                             <div class="flex justify-between text-gray-700">
-                                <span>Shipping</span>
+                                <span>Ongkir</span>
                                 <span>Rp {{ formatPrice(shipping) }}</span>
                             </div>
                         </div>
@@ -204,7 +204,7 @@
                                         d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                                     />
                                 </svg>
-                                Secure checkout
+                                Checkout aman
                             </p>
                         </div>
                     </div>
@@ -232,13 +232,13 @@ const form = useForm({
     shipping_city: '',
     shipping_state: '',
     shipping_zipcode: '',
-    shipping_phone: '',
-    payment_method: 'credit_card',
+    shipping_phone: user?.phone || '',
+    payment_method: 'cash',
     notes: '',
 });
 
-const taxRate = 0.07;
-const shipping = 5.0;
+const taxRate = 0.05;
+const shipping = 5000;
 const processing = ref(false);
 
 const subtotal = computed(() => props.cartItems.reduce((total, item) => total + item.price * item.quantity, 0));
@@ -285,17 +285,16 @@ const submitOrder = () => {
 };
 
 const fields = [
-    { name: 'shipping_fullname', label: 'Full Name', type: 'text', required: true },
-    { name: 'shipping_phone', label: 'Phone Number', type: 'tel', required: true },
-    { name: 'shipping_address', label: 'Address', type: 'text', required: true, fullWidth: true },
-    { name: 'shipping_city', label: 'City', type: 'text', required: true },
-    { name: 'shipping_state', label: 'State/Province', type: 'text', required: true },
-    { name: 'shipping_zipcode', label: 'ZIP/Postal Code', type: 'text', required: true },
+    { name: 'shipping_fullname', label: 'Nama Lengkap', type: 'text', required: true },
+    { name: 'shipping_phone', label: 'Nomor Telepon', type: 'tel', required: true },
+    { name: 'shipping_address', label: 'Alamat', type: 'text', required: true, fullWidth: true },
+    { name: 'shipping_city', label: 'Kota', type: 'text', required: true },
+    { name: 'shipping_state', label: 'Provinsi', type: 'text', required: true },
+    { name: 'shipping_zipcode', label: 'Kode Pos', type: 'text', required: true },
 ];
 
 const paymentMethods = [
-    { value: 'credit_card', label: 'Credit Card' },
-    { value: 'paypal', label: 'PayPal' },
+    { value: 'cash', label: 'COD' },
     { value: 'bank_transfer', label: 'Bank Transfer' },
 ];
 </script>
