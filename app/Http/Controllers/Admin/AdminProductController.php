@@ -52,6 +52,7 @@ class AdminProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
+            'cost_price' => 'required|numeric|min:0',
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
             'description' => 'nullable|string',
@@ -103,6 +104,7 @@ class AdminProductController extends Controller
         $validated = Validator::make($data, [
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
+            'cost_price' => 'required|numeric|min:0',
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
             'description' => 'nullable|string',

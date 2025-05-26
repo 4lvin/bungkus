@@ -3,6 +3,7 @@
 // use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Shop\CartController;
 use App\Http\Controllers\Shop\CheckoutController;
+use App\Http\Controllers\Shop\ShopOrderController;
 use App\Http\Controllers\Shop\HomeController;
 use App\Http\Controllers\Shop\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -27,6 +28,7 @@ Route::get('/cart/count', [CartController::class, 'getCartCount'])->name('cart.c
 // });
 // Routes that require authentication
 Route::middleware(['auth'])->group(function () {
+    Route::get('/myorders', [ShopOrderController::class, 'index'])->name('myorders.index');
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::get('/thankyou/{order}', [CheckoutController::class, 'thankYou'])->name('checkout.thankyou');

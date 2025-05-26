@@ -28,6 +28,7 @@
                         </Column>
                         <Column header="Aksi">
                             <template #body="{ data }">
+                                <Button icon="pi pi-eye" class="p-button-text" @click="onClickDetail(data)" />
                                 <!-- <Button icon="pi pi-pencil" class="p-button-text" @click="onClickAdd(data)" /> -->
                                 <Button icon="pi pi-trash" class="p-button-text p-button-danger" @click="onClickDelete(data)" />
                             </template>
@@ -49,14 +50,19 @@
         </div>
     </AppLayout>
 
-    <Dialog v-model:visible="visible" :header="labelHeader" modal :style="{ width: '40rem' }">
-        <!-- <AddProduct
-            :data="dataProduk"
-            :categories="props.categories"
-            :onClose="onHideForm"
-            @on-change-loading="onChangeLoading"
-            :is-loading="isLoading"
-        /> -->
+    <Dialog v-model:visible="visible" :header="`Detail Order #${dataProduk?.order_number ?? ''}`" modal :style="{ width: '40rem' }">
+        <DataTable :value="dataProduk.items" scrollable scrollHeight="300px" :rows="5">
+            <Column field="product.name" header="Produk" />
+            <Column field="price" header="Harga">
+                <template #body="{ data }">{{ Number(data.price).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) }}</template>
+            </Column>
+            <Column field="quantity" header="Qty" />
+            <Column header="Subtotal">
+                <template #body="{ data }">
+                    {{ (Number(data.price) * data.quantity).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) }}
+                </template>
+            </Column>
+        </DataTable>
     </Dialog>
 
     <ConfirmDialog group="delete-group">
@@ -125,18 +131,10 @@ watch(
     },
 );
 
-function onClickAdd(data: any = null) {
+function onClickDetail(data: any = null) {
     visible.value = true;
     dataProduk.value = data;
-    labelHeader.value = data?.id ? 'Edit Produk' : 'Tambah Produk';
-}
-
-function onHideForm() {
-    visible.value = false;
-}
-
-function onChangeLoading(val: boolean) {
-    isLoading.value = val;
+    labelHeader.value = data?.id ? 'Detail Produk' : 'Detail Produk';
 }
 
 function onClickDelete(data: any) {

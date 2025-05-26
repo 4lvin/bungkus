@@ -6,7 +6,7 @@
                 <div class="flex items-center justify-between">
                     <div class="flex">
                         <img :src="logo" alt="Logo" class="h-6 w-6" />
-                        <Link :href="route('home')" class="ms-3 text-xl font-bold">Tumbas Online</Link>
+                        <Link :href="route('home')" class="ms-3 text-xl font-bold">Bungkus</Link>
                     </div>
 
                     <nav>
@@ -27,6 +27,9 @@
                             </li>
                             <li v-if="auth?.user">
                                 <Link :href="route('profile')" class="hover:text-gray-200">Akun Saya</Link>
+                            </li>
+                            <li v-if="auth?.user">
+                                <Link :href="route('myorders.index')" class="hover:text-gray-200">Pesanan</Link>
                             </li>
                             <li v-if="auth?.user">
                                 <form @submit.prevent="logout">

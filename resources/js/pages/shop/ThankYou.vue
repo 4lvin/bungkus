@@ -50,7 +50,7 @@
                     <Link :href="route('home')" class="rounded bg-blue-600 px-6 py-2 text-center text-sm text-white hover:bg-blue-700">
                         Lanjut Belanja
                     </Link>
-                    <Link :href="route('profile')" class="rounded bg-gray-600 px-6 py-2 text-center text-sm text-white hover:bg-gray-700">
+                    <Link :href="route('myorders.index')" class="rounded bg-gray-600 px-6 py-2 text-center text-sm text-white hover:bg-gray-700">
                         Lihat Riwayat Pesanan
                     </Link>
                 </div>

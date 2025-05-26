@@ -25,6 +25,15 @@
             </Message>
         </div>
 
+        <!-- HPP -->
+        <div>
+            <label class="mb-1 block text-sm font-medium">Harga HPP</label>
+            <InputNumber v-model="form.cost_price" name="cost_price" class="w-full" inputClass="w-full" />
+            <Message v-if="$form.cost_price?.invalid" severity="error" size="small" variant="simple">
+                {{ $form.cost_price.error?.message }}
+            </Message>
+        </div>
+
         <!-- Harga -->
         <div>
             <label class="mb-1 block text-sm font-medium">Harga</label>
@@ -119,6 +128,7 @@ const isLoading = ref(false);
 const form = useForm({
     name: '',
     category_id: null,
+    cost_price: null,
     price: null,
     quantity: null,
     description: '',
@@ -132,6 +142,7 @@ const resolver = yupResolver(
     object({
         name: string().required('Nama produk harus diisi'),
         category_id: number().required('Kategori harus dipilih'),
+        cost_price: number().min(0, 'Harga HPP minimal 0').required('Harga HPP harus diisi'),
         price: number().min(0, 'Harga minimal 0').required('Harga harus diisi'),
         quantity: number().min(0, 'Stok minimal 0').required('Stok harus diisi'),
         description: string().nullable(),
@@ -156,6 +167,7 @@ if (props.data) {
     dataInput.value = { ...props.data };
     form.name = dataInput.value.name;
     form.category_id = dataInput.value.category_id;
+    form.cost_price = dataInput.value.cost_price;
     form.price = dataInput.value.price;
     form.quantity = dataInput.value.quantity;
     form.description = dataInput.value.description;
